@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veza App</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+        body {
+            background-color: #597445;
+            font-family: 'Press Start 2P', cursive;
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        .container {
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            border: 2px solid #fff;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px;
+            margin: 8px 0;
+            border-radius: 3px;
+            border: 1px solid #fff;
+            font-size: 10px; /* Minimized font size */
+            font-family: 'Press Start 2P', cursive;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+        }
+        input::placeholder {
+            color: #bbb;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        .hidden {
+            display: none;
+        }
+        .chat-section {
+            text-align: left;
+        }
+        .chat-box {
+            background-color: white;
+            color: black;
+            padding: 8px;
+            border-radius: 5px;
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 8px;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 10px; /* Minimized font size */
+        }
+        .message-input {
+            width: calc(100% - 20px);
+            display: inline-block;
+            font-size: 10px; /* Minimized font size */
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        label {
+            margin-bottom: 5px;
+            font-size: 10px; /* Minimized font size */
+            text-align: left;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="homepage">
+            <h1>VEZA</h1>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="Enter your username">
+            </div>
+            <div class="form-group">
+                <label for="interest">Select Interest</label>
+                <select id="interest">
+                    <option value="chitchat">Chitchat</option>
+                    <option value="booktalk">Booktalk</option>
+                    <option value="movietalk">Movietalk</option>
+                    <option value="gametalk">Gametalk</option>
+                </select>
+            </div>
+            <button id="startChat">Start Chat</button>
+        </div>
+
+        <div id="chatpage" class="hidden">
+            <div class="chat-section">
+                <div id="chatBox" class="chat-box"></div>
+                <input type="text" id="messageInput" class="message-input" placeholder="Type your message...">
+                <button id="sendMessage">Send</button>
+            </div>
+            <button id="endChat">End Chat</button>
+            <button id="backToHomepage">Back to Homepage</button>
+        </div>
+    </div>
+
+    <script>
+        const homepage = document.getElementById('homepage');
+        const chatpage = document.getElementById('chatpage');
+        const chatBox = document.getElementById('chatBox');
+        const messageInput = document.getElementById('messageInput');
+        const startChatButton = document.getElementById('startChat');
+        const sendMessageButton = document.getElementById('sendMessage');
+        const endChatButton = document.getElementById('endChat');
+        const backToHomepageButton = document.getElementById('backToHomepage');
+
+        const forbiddenWords = ["explicit", "badword"]; // Add more words as needed
+
+        function containsForbiddenWord(username) {
+            return forbiddenWords.some(word => username.toLowerCase().includes(word));
+        }
+
+        startChatButton.addEventListener('click', () => {
+            const username = document.getElementById('username').value;
+            const interest = document.getElementById('interest').value;
+
+            if (username.trim() === "") {
+                alert("Please enter a username");
+                return;
+            }
+
+            if (containsForbiddenWord(username)) {
+                alert("Username contains forbidden words. Please choose another one.");
+                return;
+            }
+
+            // Simulate finding a match
+            chatBox.innerHTML = `<p><em>Connecting to someone with interest: ${interest}...</em></p>`;
+            setTimeout(() => {
+                chatBox.innerHTML += `<p><em>You are now connected with a match!</em></p>`;
+            }, 2000);
+
+            homepage.classList.add('hidden');
+            chatpage.classList.remove('hidden');
+        });
+
+        sendMessageButton.addEventListener('click', () => {
+            const message = messageInput.value.trim();
+            if (message !== "") {
+                chatBox.innerHTML += `<p><strong>You:</strong> ${message}</p>`;
+                messageInput.value = "";
+                chatBox.scrollTop = chatBox.scrollHeight;
+                // Simulate receiving a response
+                setTimeout(() => {
+                    chatBox.innerHTML += `<p><strong>Match:</strong> Response to your message</p>`;
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                }, 1000);
+            }
+        });
+
+        endChatButton.addEventListener('click', () => {
+            if (confirm("Are you sure you want to end the chat?")) {
+                chatBox.innerHTML = `<p><em>You have ended the chat.</em></p>`;
+                messageInput.disabled = true;
+                sendMessageButton.disabled = true;
+            }
+        });
+
+        backToHomepageButton.addEventListener('click', () => {
+            homepage.classList.remove('hidden');
+            chatpage.classList.add('hidden');
+            chatBox.innerHTML = "";
+            messageInput.disabled = false;
+            sendMessageButton.disabled = false;
+        });
+    </script>
+</body>
+</html>
